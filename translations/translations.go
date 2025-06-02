@@ -5,9 +5,19 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
-	logger "mashinki/Logger"
+	"mashinki/logging"
 	"net/http"
 )
+
+var logger *logging.FLogger
+
+func init() {
+	var err error
+	logger, err = logging.NewFLogger("log.txt")
+	if err != nil {
+		panic(fmt.Sprintf("Failed to initialize logger: %v", err))
+	}
+}
 
 func translateByLibreTranslate(text string, sourceLang string, targetLang string) (string, error) {
 
@@ -48,7 +58,7 @@ func translateByLibreTranslate(text string, sourceLang string, targetLang string
 	return result.TranslatedText, nil
 }
 
-func Translate(chineseText string, logger *logger.FLogger) string {
+func Translate(chineseText string) string {
 	if chineseText == "" {
 		return chineseText
 	}

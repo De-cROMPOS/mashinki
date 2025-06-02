@@ -2,15 +2,25 @@ package main
 
 import (
 	"fmt"
-	"mashinki/Logger"
+	"mashinki/logging"
+	"mashinki/parser"
 )
 
 func main() {
-	logger, err := logger.NewFLogger("log.txt")
+
+	//Initializing logger
+	logger, err := logging.NewFLogger("log.txt")
 	if err != nil {
 		fmt.Println(err)
 		return
 	}
-	logger.LogErrorF("Hello, I'm %s", "FLogger")
-	fmt.Println("Hello World")
+
+	url := "https://www.che168.com/dealer/166373/53093908.html"
+
+	info, err := parser.GetCarInfo(url)
+	if err != nil {
+		logger.LogErrorF("Error while parsing car id: %v", err)
+	}
+
+	fmt.Println(info.String())
 }
