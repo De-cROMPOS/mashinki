@@ -1,2 +1,9 @@
 .env
-log.txt
+*.log
+*.txt
+*.json
+*.yaml
+*.yml
+*.toml
+*.ini
+*.conf

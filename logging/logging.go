@@ -11,6 +11,24 @@ type FLogger struct {
 	mu      sync.Mutex
 }
 
+var DefaultLogger *FLogger
+var TranslationsLogger *FLogger
+
+func init() {
+	var err error
+	DefaultLogger, err = NewFLogger("logging/app.log")
+	if err != nil {
+		log.Printf("Failed to initialize default logger: %v", err)
+		return
+	}
+
+	TranslationsLogger, err = NewFLogger("logging/translations.log")
+	if err != nil {
+		log.Printf("Failed to initialize translations logger: %v", err)
+		return
+	}
+}
+
 func NewFLogger(filename string) (*FLogger, error) {
 	logFile, err := os.OpenFile(filename, os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0666)
 	if err != nil {

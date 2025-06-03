@@ -44,7 +44,12 @@ func GetEnv(key string) string {
 
 	for _, line := range strings.Split(string(envData), "\n") {
 		if strings.HasPrefix(line, key+"=") {
-			return strings.TrimPrefix(line, key+"=")
+			value := strings.TrimPrefix(line, key+"=")
+			
+			// Clean up the value from special characters
+			value = strings.TrimSpace(value)
+			value = strings.Trim(value, "\r\n")
+			return value
 		}
 	}
 	return ""

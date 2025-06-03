@@ -9,18 +9,7 @@ import (
 	"net/http"
 )
 
-var logger *logging.FLogger
-
-func init() {
-	var err error
-	logger, err = logging.NewFLogger("log.txt")
-	if err != nil {
-		panic(fmt.Sprintf("Failed to initialize logger: %v", err))
-	}
-}
-
 func translateByLibreTranslate(text string, sourceLang string, targetLang string) (string, error) {
-
 	// forming the request data
 	data := map[string]interface{}{
 		"q":      text,
@@ -66,7 +55,7 @@ func Translate(chineseText string) string {
 	// Ch to En
 	englishText, err := translateByLibreTranslate(chineseText, "zh", "en")
 	if err != nil {
-		logger.LogErrorF("Error while translating to English\n "+
+		logging.TranslationsLogger.LogErrorF("Error while translating to English\n "+
 			"Chinese:: %v\n"+
 			"error: %v", chineseText, err)
 		return chineseText
@@ -75,7 +64,7 @@ func Translate(chineseText string) string {
 	// En to Rus
 	russianText, err := translateByLibreTranslate(englishText, "en", "ru")
 	if err != nil {
-		logger.LogErrorF("Error while translating ro Russian\n "+
+		logging.TranslationsLogger.LogErrorF("Error while translating ro Russian\n "+
 			"English: %v\n"+
 			"error: %v", englishText, err)
 		return englishText
