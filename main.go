@@ -1,26 +1,37 @@
 package main
 
 import (
-	"fmt"
+	"errors"
+	"log"
+	envhandler "mashinki/envHandler"
 	"mashinki/logging"
-	"mashinki/parser"
+	"mashinki/tgBot"
+	"os"
+	"os/signal"
+	"syscall"
 )
 
 func main() {
-
-	//Initializing logger
-	logger, err := logging.NewFLogger("log.txt")
-	if err != nil {
-		fmt.Println(err)
+	// Checking if bot token is available
+	botToken := envhandler.GetEnv("TG_TOKEN")
+	if botToken == "" {
+		logging.DefaultLogger.LogError(errors.New("TG_TOKEN not found in environment variables"))
 		return
 	}
 
-	url := "https://www.che168.com/dealer/166373/53093908.html"
-
-	info, err := parser.GetCarInfo(url)
+	log.Println("Starting bot...")
+	bot, err := tgBot.StartBot()
 	if err != nil {
-		logger.LogErrorF("Error while parsing car id: %v", err)
+		logging.DefaultLogger.LogErrorF("Failed to start bot: %v", err)
+		return
 	}
 
-	fmt.Println(info.String())
+	// graceful shutdown
+	quit := make(chan os.Signal, 1)
+	signal.Notify(quit, syscall.SIGTERM, syscall.SIGINT)
+
+	// wait for signal for shutdown
+	<-quit
+	log.Println("Shutting down bot...")
+	bot.Stop()
 }

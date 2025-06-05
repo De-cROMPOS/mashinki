@@ -71,7 +71,7 @@ func getCarId(urlStr string) (string, error) {
 }
 
 // getCarConfig retrieves basic car information: name, price, year, mileage
-func getCarConfig(url string, CI *carInfo) error {
+func getCarConfig(url string, CI *CarInfo) error {
 	var err error
 	CI.CarId, err = getCarId(url)
 	if err != nil {
@@ -124,7 +124,7 @@ func getCarConfig(url string, CI *carInfo) error {
 }
 
 // getCarSpecInfo retrieves technical specifications: power, engine size, drive type, fuel type
-func getCarSpecInfo(CI *carInfo) error {
+func getCarSpecInfo(CI *CarInfo) error {
 	carSpecUrl := fmt.Sprintf("https://cacheapigo.che168.com/CarProduct/GetParam.ashx?specid=%s&callback=configTitle", CI.SpecID)
 	specs, err := makeRequest(carSpecUrl, 1)
 	if err != nil {
@@ -190,23 +190,23 @@ func getCarSpecInfo(CI *carInfo) error {
 
 // GetCarInfo retrieves complete car information by URL.
 // Returns a structure with car information or an error if something went wrong.
-func GetCarInfo(url string) (carInfo, error) {
-	carInformation := &carInfo{}
+func GetCarInfo(url string) (CarInfo, error) {
+	carInformation := &CarInfo{}
 
 	// getting full name, price, year, mileage
 	err := getCarConfig(url, carInformation)
 	if err != nil {
-		return carInfo{}, fmt.Errorf("failed to get car config: %v", err)
+		return CarInfo{}, fmt.Errorf("failed to get car config: %v", err)
 	}
 
 	if carInformation.SpecID != "" {
 		// getting car power, engine size, drive, fuel type
 		err = getCarSpecInfo(carInformation)
 		if err != nil {
-			return carInfo{}, fmt.Errorf("failed to get car specs: %v", err)
+			return CarInfo{}, fmt.Errorf("failed to get car specs: %v", err)
 		}
 		return *carInformation, nil
 	}
 
-	return carInfo{}, nil
+	return CarInfo{}, fmt.Errorf("failed to get car Info: %v", err)
 }

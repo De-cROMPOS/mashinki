@@ -1,8 +1,6 @@
 package parser
 
-import "fmt"
-
-type carInfo struct {
+type CarInfo struct {
 	FullName   string
 	Milage     string
 	Year       string
@@ -15,23 +13,6 @@ type carInfo struct {
 	CarId      string
 }
 
-func (c carInfo) String() string {
-	return fmt.Sprintf(
-		"Автомобиль: %s\n"+
-			"Год: %s | Пробег: %v\n"+
-			"Цена: %v\n"+
-			"Двигатель: %d см³ (%d kW.)\n"+
-			"Привод: %s | Топливо: %s",
-		c.FullName,
-		c.Year,
-		c.Milage,
-		c.Price,
-		c.EngineSize,
-		c.Power,
-		c.Drive,
-		c.FuelType,
-	)
-}
 
 // For parsing car specs
 type SpecResponse struct {
